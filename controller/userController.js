@@ -69,10 +69,9 @@ export const Login = async (req, res) => {
     if (error instanceof errors.E_VALIDATION_ERROR) {
       const errorMessages = error?.messages?.map((error) => error?.message);
       sendResponse(res, errorMessages, null, true, 422);
-    } else {
-      console.log(error);
-      sendResponse(res, "Internal Server Error", null, true, 500);
     }
+    console.log(error);
+    sendResponse(res, "Internal Server Error", null, true, 500);
   }
 };
 
