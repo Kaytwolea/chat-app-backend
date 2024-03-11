@@ -24,7 +24,7 @@ export const Register = async (req, res) => {
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
       const errorMessages = error?.messages?.map((error) => error?.message);
-      sendResponse(res, errorMessages, null, true, 422);
+      return sendResponse(res, errorMessages, null, true, 422);
     } else if (
       error?.code === 11000 &&
       error?.keyPattern &&
@@ -57,7 +57,7 @@ export const Login = async (req, res) => {
     const { email, password } = output;
     const user = await User.findOne({ email });
     if (!user) {
-      sendResponse(res, "User not found", null, true, 400);
+      return sendResponse(res, "User not found", null, true, 400);
     }
     const validatePassword = await bcrypt.compare(password, user?.password);
     if (!validatePassword) {
@@ -70,8 +70,6 @@ export const Login = async (req, res) => {
       const errorMessages = error?.messages?.map((error) => error?.message);
       sendResponse(res, errorMessages, null, true, 422);
     }
-    console.log(error);
-    sendResponse(res, "Internal Server Error", null, true, 500);
   }
 };
 
