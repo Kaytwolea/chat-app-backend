@@ -14,7 +14,7 @@ const PORT = 8000;
 const server = http.createServer(app);
 app.use(express.json());
 app.set("view engine", "ejs");
-app.use(cors());
+app.use(cors("*"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 const io = new Server(server);
