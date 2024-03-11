@@ -95,3 +95,32 @@ export const sendMessages = async (req, res) => {
     }
   }
 };
+
+export const getConvos = async (req, res) => {
+  const id = req.id;
+  try {
+    const convos = await Conversation.find({
+      $or: [{ senderId: id }, { receiverId: id }],
+    })
+      .sort({ lastTimeMessage: "desc" })
+      .exec();
+    const convoWithReceivers = await Promise.all(
+      convos.map(async (convo) => {
+        let receiverId;
+        if (convo.senderId.toString() === id) {
+          receiverId = convo.receiverId;
+        } else {
+          receiverId = convo.senderId;
+        }
+        const receiver = await User.findOne({ _id: receiverId }).select(
+          "-password"
+        );
+        return { conversation: convo, receiver: receiver };
+      })
+    );
+    sendResponse(res, "success", convoWithReceivers, false, 200);
+  } catch (e) {
+    console.error(e);
+    sendResponse(res, "Internal Server Error", null, true, 500);
+  }
+};
