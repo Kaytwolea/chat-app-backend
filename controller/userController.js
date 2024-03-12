@@ -67,8 +67,7 @@ export const Login = async (req, res) => {
     sendResponse(res, "Login request successful", { token: token }, false, 200);
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
-      const errorMessages = error?.messages?.map((error) => error?.message);
-      sendResponse(res, errorMessages, null, true, 422);
+      sendResponse(res, error.messages[0], null, true, 422);
     }
   }
 };
