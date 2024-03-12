@@ -14,14 +14,25 @@ const PORT = 8000;
 const server = http.createServer(app);
 app.use(express.json());
 app.set("view engine", "ejs");
-app.use(cors("*"));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin:
+      process.env.MODE === "development"
+        ? process.env.BASE_URL_DEV
+        : process.env.BASE_URL_PROD,
+    methods: ["GET", "POST"],
+  },
+});
 
 io.on("connection", (socket) => {
   console.log("connected");
-
   socket.on("disconnect", () => {
     console.log("disconnected");
   });
