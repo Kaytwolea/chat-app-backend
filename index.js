@@ -24,7 +24,7 @@ app.use(bodyParser.raw());
 const io = new Server(server, {
   cors: {
     origin:
-      process.env.MODE === "development"
+      process.env.MODE === "DEVELOPMENT"
         ? process.env.BASE_URL_DEV
         : process.env.BASE_URL_PROD,
     methods: ["GET", "POST"],
