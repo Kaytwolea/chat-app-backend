@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import Message from "../model/message.js";
 import User from "../model/user.js";
 import { messageSchema } from "../request/sendmessage.js";
-import { io } from "../index.js";
+import Pusher from "pusher";
 
 export const checkConvo = async (req, res) => {
   const id = req.id;
@@ -83,7 +83,17 @@ export const sendMessages = async (req, res) => {
       receiverId: receiver_id,
       body: body,
     });
-    io.emit("message", newMessage);
+    const pusher = new Pusher({
+      appId: process.env.PUSHER_APP_ID,
+      key: process.env.PUSHER_APP_KEY,
+      secret: process.env.PUSHER_APP_SECRET,
+      cluster: "mt1",
+      useTLS: true,
+    });
+    await pusher.trigger("chat-channel", "new-message", {
+      message: "new message",
+      data: newMessage,
+    });
     sendResponse(res, "Message sent successfully", newMessage, false, 200);
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
