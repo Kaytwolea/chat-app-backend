@@ -23,8 +23,7 @@ export const Register = async (req, res) => {
     });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
-      const errorMessages = error?.messages?.map((error) => error?.message);
-      return sendResponse(res, errorMessages, null, true, 422);
+      return sendResponse(res, error.messages[0], null, true, 422);
     } else if (
       error?.code === 11000 &&
       error?.keyPattern &&
