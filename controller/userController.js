@@ -93,3 +93,16 @@ export const getUsers = async (req, res) => {
     return res.status(500).json({ message: "Error retrieving users" });
   }
 };
+
+export const viewProfile = async (req, res) => {
+  const { id } = req.params;
+  if (!id) sendResponse(res, "No conversation id specified", null, true, 500);
+  try {
+    const user = await User.findOne({ _id: id }).select("-password").exec();
+    if (!user) sendResponse(res, "User not found", null, true, 500);
+    sendResponse(res, "User returned successfully", user, false, 200);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return res.status(500).json({ message: "Error retrieving users" });
+  }
+};

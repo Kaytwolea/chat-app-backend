@@ -124,3 +124,20 @@ export const getConvos = async (req, res) => {
     sendResponse(res, "Internal Server Error", null, true, 500);
   }
 };
+
+export const getChatMessages = async (req, res) => {
+  const { id } = req.params;
+  if (!id) sendResponse(res, "No conversation id specified", null, true, 500);
+  try {
+    const messages = await Message.find({ conversationId: id });
+    if (!messages) {
+      sendResponse(res, "No message for this conversation", null, true, 404);
+    }
+    sendResponse(res, "Message returned successfully", messages, false, 200);
+  } catch (e) {
+    if (e) {
+      console.log(e);
+      sendResponse(res, "internal server error", null, true, 500);
+    }
+  }
+};
