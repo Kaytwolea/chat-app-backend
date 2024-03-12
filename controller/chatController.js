@@ -90,7 +90,7 @@ export const sendMessages = async (req, res) => {
       cluster: "mt1",
       useTLS: true,
     });
-    await pusher.trigger("chat-channel", "new-message", {
+    await pusher.trigger(`chat-${conversation_id}`, "new-message", {
       message: "new message",
       data: newMessage,
     });
