@@ -19,6 +19,9 @@ const userSchema = mongoose.Schema(
     role: {
       type: String,
     },
+    last_login: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

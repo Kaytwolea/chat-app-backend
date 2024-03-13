@@ -62,6 +62,8 @@ export const Login = async (req, res) => {
     if (!validatePassword) {
       sendResponse(res, "Incorrect password", null, true, 400);
     }
+    user.last_login = new Date();
+    await user.save();
     const token = await generateToken(user);
     sendResponse(res, "Login request successful", { token: token }, false, 200);
   } catch (error) {
