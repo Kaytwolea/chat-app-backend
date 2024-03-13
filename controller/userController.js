@@ -82,9 +82,32 @@ export const getUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   const id = req.id;
   try {
-    const users = await User.find({ _id: { $ne: id } })
-      .select("-password")
-      .exec();
+    const users = await User.find({ _id: { $ne: id } }).select("-password");
+
+    sendResponse(res, "Request successful", users, false, 200);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return res.status(500).json({ message: "Error retrieving users" });
+  }
+};
+
+export const searchUsers = async (req, res) => {
+  const id = req.id;
+  const searchQuery = req.query?.search?.toLowerCase();
+  console.log(searchQuery);
+  try {
+    const users = await User.find({
+      $and: [
+        { _id: { $ne: id } },
+        {
+          $or: [
+            { user_name: { $regex: searchQuery } },
+            { email: { $regex: searchQuery } },
+          ],
+        },
+      ],
+    }).select("-password");
+
     sendResponse(res, "Request successful", users, false, 200);
   } catch (error) {
     console.error("Error fetching users:", error);
