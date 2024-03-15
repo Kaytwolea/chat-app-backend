@@ -64,9 +64,7 @@ export const checkConvo = async (req, res) => {
     } else if (error instanceof mongoose.Error.ValidationError) {
       const errorMessage = "Missing or invalid recipient ID.";
       sendResponse(res, errorMessage, null, true, 400);
-    }
-    console.log(error);
-    sendResponse(res, "Internal Server Error", null, true, 500);
+    } 
   }
 };
 

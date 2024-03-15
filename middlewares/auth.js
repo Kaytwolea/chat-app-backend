@@ -11,7 +11,10 @@ export const verifyToken = async (req, res, next) => {
   }
   try {
     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-      if (err) return res.sendStatus(403);
+      if (err)
+        return res
+          .status(403)
+          .json({ message: "Invalid token, authorization denied" });
       const { userId } = decoded;
       req.id = userId;
       next();
