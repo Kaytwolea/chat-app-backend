@@ -17,9 +17,9 @@ app.use(
     origin: "*",
   })
 );
+app.use(bodyParser.json({ limit: "200mb" }));
 app.use(bodyParser.urlencoded({ limit: "200mb", extended: true }));
 app.use(bodyParser.raw({ limit: "200mb" }));
-app.use(bodyParser.json({ limit: "200mb" }));
 
 app.get("/", (req, res) => {
   sendResponse(res, "We are live", null, false, 200);
