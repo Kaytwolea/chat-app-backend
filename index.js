@@ -7,10 +7,10 @@ import db from "./database/db.js";
 import { sendResponse } from "./shared/sendResponse.js";
 import http from "http";
 
+
 const app = express();
 configDotenv();
 const PORT = 8000;
-const server = http.createServer(app);
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(
@@ -20,6 +20,7 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   sendResponse(res, "We are live", null, false, 200);
@@ -38,4 +39,3 @@ db()
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-

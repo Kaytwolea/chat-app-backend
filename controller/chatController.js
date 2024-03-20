@@ -7,6 +7,7 @@ import Message from "../model/message.js";
 import User from "../model/user.js";
 import { messageSchema } from "../request/sendmessage.js";
 import Pusher from "pusher";
+import { uploadImage } from "../shared/cloudinary.js";
 
 export const checkConvo = async (req, res) => {
   const id = req.id;
@@ -64,23 +65,40 @@ export const checkConvo = async (req, res) => {
     } else if (error instanceof mongoose.Error.ValidationError) {
       const errorMessage = "Missing or invalid recipient ID.";
       sendResponse(res, errorMessage, null, true, 400);
-    } 
+    }
   }
 };
 
 export const sendMessages = async (req, res) => {
   const id = req.id;
   const data = req.body;
+  console.log(data);
+  let newMessage;
   try {
     const validator = vine.compile(messageSchema);
     const output = await validator.validate(data);
-    const { conversation_id, receiver_id, body } = output;
-    const newMessage = await Message.create({
-      conversationId: conversation_id,
-      senderId: id,
-      receiverId: receiver_id,
-      body: body,
-    });
+    const { conversation_id, receiver_id, body, image } = output;
+    console.log(req.file);
+    console.log(image);
+
+    if (image) {
+      const url = await uploadImage(image);
+      console.log(url);
+      newMessage = await Message.create({
+        conversationId: conversation_id,
+        senderId: id,
+        receiverId: receiver_id,
+        body: url,
+        type: "image",
+      });
+    } else {
+      newMessage = await Message.create({
+        conversationId: conversation_id,
+        senderId: id,
+        receiverId: receiver_id,
+        body: body,
+      });
+    }
     const pusher = new Pusher({
       appId: process.env.PUSHER_APP_ID,
       key: process.env.PUSHER_APP_KEY,
