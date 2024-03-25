@@ -9,7 +9,7 @@ import http from "http";
 
 const app = express();
 configDotenv();
-const PORT = 8000;
+const PORT = 9000;
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(

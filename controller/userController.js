@@ -84,7 +84,13 @@ export const getUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   const id = req.id;
   try {
-    const users = await User.find({ _id: { $ne: id } }).select("-password");
+    const user = await User.findOne({ _id: id }).select("-password").exec();
+    let users;
+    if (user?.role === "admin") {
+      users = await User.find({ _id: { $ne: id } }).select("-password");
+    } else {
+      users = await User.find({ role: "admin" }).select("-password");
+    }
 
     sendResponse(res, "Request successful", users, false, 200);
   } catch (error) {
